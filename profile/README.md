@@ -16,7 +16,7 @@ Everything we release is open source under the Apache 2.0 license. Our projects 
 
 ### Streaming tables that stay fresh automatically
 
-[**pg-trickle**](https://github.com/trickle-labs/pg-trickle) is the foundation of much of what we do. It adds *stream tables* to PostgreSQL — tables defined by a SQL query that keep themselves up to date as the underlying data changes. If you have ever wished a materialized view would just refresh itself, instantly and efficiently, this is that. When one row changes in a million-row source table, pg-trickle processes one row's worth of computation. Not a million. It uses differential dataflow — the same mathematics behind research systems like Materialize and Feldera — implemented as a native Rust extension that lives inside PostgreSQL and uses nothing outside it.
+[**pg-trickle**](https://github.com/trickle-labs/pg-trickle) is the foundation of much of what we do. It adds *stream tables* to PostgreSQL — tables defined by a SQL query that keep themselves up to date as the underlying data changes. If you have ever wished a materialized view would just refresh itself, instantly and efficiently, this is that. When one row changes in a million-row source table, pg-trickle processes one row's worth of computation. Not a million. It uses differential dataflow — implemented as a native Rust extension that lives inside PostgreSQL and uses nothing outside it.
 
 Stream tables can depend on other stream tables. A single write to a base table can ripple through a graph of derived views, each updated in the correct order, each doing only the work proportional to what actually changed. The system figures out scheduling automatically: you declare how fresh you need your consumer-facing tables to be, and the upstream plumbing inherits that cadence without any manual configuration.
 
@@ -32,11 +32,11 @@ Knowledge graphs are particularly powerful for AI applications. pg-ripple combin
 
 ### Messaging without a message broker
 
-[**pg-tide**](https://github.com/trickle-labs/pg-tide) gives PostgreSQL a built-in messaging backbone. It implements the transactional outbox pattern: you publish events inside the same database transaction as your business logic — no dual-writes, no distributed transactions, no chance of messages getting lost or duplicated. When you are ready to fan out to Kafka, NATS, Redis Streams, SQS, or any of fifteen other platforms, a lightweight relay binary bridges the gap with exactly-once delivery semantics. Pipeline configuration lives in PostgreSQL itself and hot-reloads without restarting.
+[**pg-tide**](https://github.com/trickle-labs/pg-tide) gives PostgreSQL a built-in messaging backbone. It implements the transactional outbox pattern: you publish events inside the same database transaction as your business logic — no dual-writes, no distributed transactions, no chance of messages getting lost or duplicated. When you are ready to fan out to Kafka, NATS, Redis Streams, or any of fifteen other platforms, a lightweight relay binary bridges the gap with exactly-once delivery semantics. Pipeline configuration lives in PostgreSQL itself and hot-reloads without restarting.
 
 ### Safe schema evolution for streaming pipelines
 
-[**pg-aqueduct**](https://github.com/trickle-labs/pg-aqueduct) is the migration tool for teams that operate pg-trickle in production. Adding a column, changing an aggregation, or restructuring a pipeline of stream tables today requires careful manual work to avoid downtime and data loss. pg-aqueduct computes a safe execution plan automatically — preserving accumulated state wherever the mathematics allow, enforcing topological order across dependencies, and offering rollback when things go wrong. It occupies the same role for streaming pipelines that Atlas or Terraform occupies for relational schemas and cloud infrastructure.
+[**pg-aqueduct**](https://github.com/trickle-labs/pg-aqueduct) is the migration tool for teams that operate pg-trickle in production. Adding a column, changing an aggregation, or restructuring a pipeline of stream tables today requires careful manual work to avoid downtime and data loss. pg-aqueduct computes a safe execution plan automatically — preserving accumulated state wherever the mathematics allow, enforcing topological order across dependencies, and offering rollback when things go wrong. It occupies the same role for streaming pipelines that schema migration tools occupy for relational schemas and infrastructure.
 
 ### A knowledge compiler for documents
 
