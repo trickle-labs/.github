@@ -20,6 +20,10 @@ Everything we release is open source under the Apache 2.0 license. Our projects 
 
 Stream tables can depend on other stream tables. A single write to a base table can ripple through a graph of derived views, each updated in the correct order, each doing only the work proportional to what actually changed. The system figures out scheduling automatically: you declare how fresh you need your consumer-facing tables to be, and the upstream plumbing inherits that cadence without any manual configuration.
 
+### Safe schema evolution for streaming pipelines
+
+[**pg-aqueduct**](https://github.com/trickle-labs/pg-aqueduct) is the migration tool for teams that operate pg-trickle in production. Adding a column, changing an aggregation, or restructuring a pipeline of stream tables today requires careful manual work to avoid downtime and data loss. pg-aqueduct computes a safe execution plan automatically — preserving accumulated state wherever the mathematics allow, enforcing topological order across dependencies, and offering rollback when things go wrong. It occupies the same role for streaming pipelines that schema migration tools occupy for relational schemas and infrastructure.
+
 ### Rules that turn changing data into durable work
 
 [**pg-react**](https://github.com/trickle-labs/pg-react) is a PostgreSQL-native rule engine for turning changing data into durable decisions and work. You define conditions as ordinary SQL views, and pg-react remembers when a matching row appears, changes, disappears, and later reappears. Built on pg-trickle's incremental view maintenance, it gives each match a stable identity and records its lifecycle as durable, queryable state — so a risk threshold crossing, overdue invoice, inventory shortage, or policy violation becomes an event that can be acted on exactly when it matters.
@@ -39,10 +43,6 @@ Knowledge graphs are particularly powerful for AI applications. pg-ripple combin
 ### Property graphs with native performance
 
 [**pg-eddy**](https://github.com/trickle-labs/pg-eddy) brings labelled property graph storage into PostgreSQL via a custom storage engine. Instead of simulating graph traversal with index lookups on regular tables, pg-eddy stores adjacency information directly alongside node data on disk. The result is O(degree) per-hop traversal — meaning that following a relationship from one entity to the next takes time proportional only to how many relationships that entity has, not to the size of the entire graph. It supports openCypher, the most widely-used property graph query language, with 100% compliance against the official Technology Compatibility Kit.
-
-### Safe schema evolution for streaming pipelines
-
-[**pg-aqueduct**](https://github.com/trickle-labs/pg-aqueduct) is the migration tool for teams that operate pg-trickle in production. Adding a column, changing an aggregation, or restructuring a pipeline of stream tables today requires careful manual work to avoid downtime and data loss. pg-aqueduct computes a safe execution plan automatically — preserving accumulated state wherever the mathematics allow, enforcing topological order across dependencies, and offering rollback when things go wrong. It occupies the same role for streaming pipelines that schema migration tools occupy for relational schemas and infrastructure.
 
 ### A knowledge compiler for documents
 
