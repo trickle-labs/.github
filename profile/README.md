@@ -20,6 +20,16 @@ Everything we release is open source under the Apache 2.0 license. Our projects 
 
 Stream tables can depend on other stream tables. A single write to a base table can ripple through a graph of derived views, each updated in the correct order, each doing only the work proportional to what actually changed. The system figures out scheduling automatically: you declare how fresh you need your consumer-facing tables to be, and the upstream plumbing inherits that cadence without any manual configuration.
 
+### Rules that turn changing data into durable work
+
+[**pg-react**](https://github.com/trickle-labs/pg-react) is a PostgreSQL-native rule engine for turning changing data into durable decisions and work. You define conditions as ordinary SQL views, and pg-react remembers when a matching row appears, changes, disappears, and later reappears. Built on pg-trickle's incremental view maintenance, it gives each match a stable identity and records its lifecycle as durable, queryable state — so a risk threshold crossing, overdue invoice, inventory shortage, or policy violation becomes an event that can be acted on exactly when it matters.
+
+Consequences can run as typed PostgreSQL functions or be handed to external systems through a transactional outbox. Activations, retries, leases, execution history, and rule versions all live in PostgreSQL, making the entire path from source data to completed action inspectable with SQL. pg-react also supports maintained derived facts and recursive reasoning, extending the same model from reacting to changes to continuously deriving new knowledge from the data already in the database.
+
+### Messaging without a message broker
+
+[**pg-tide**](https://github.com/trickle-labs/pg-tide) gives PostgreSQL a built-in messaging backbone. It implements the transactional outbox pattern: you publish events inside the same database transaction as your business logic — no dual-writes, no distributed transactions, no chance of messages getting lost or duplicated. When you are ready to fan out to Kafka, NATS, Redis Streams, or any of fifteen other platforms, a lightweight relay binary bridges the gap with exactly-once delivery semantics. Pipeline configuration lives in PostgreSQL itself and hot-reloads without restarting.
+
 ### A knowledge graph engine inside PostgreSQL
 
 [**pg-ripple**](https://github.com/trickle-labs/pg-ripple) turns PostgreSQL into a standards-compliant knowledge graph store. You can model data as a web of connected facts — entities, relationships, and properties — and query it with SPARQL, validate it with SHACL quality rules, and reason over it with Datalog and OWL. It passes 100% of the W3C conformance suites for SPARQL 1.1, SHACL Core, and OWL 2 RL — the industry benchmarks for correctness.
@@ -29,10 +39,6 @@ Knowledge graphs are particularly powerful for AI applications. pg-ripple combin
 ### Property graphs with native performance
 
 [**pg-eddy**](https://github.com/trickle-labs/pg-eddy) brings labelled property graph storage into PostgreSQL via a custom storage engine. Instead of simulating graph traversal with index lookups on regular tables, pg-eddy stores adjacency information directly alongside node data on disk. The result is O(degree) per-hop traversal — meaning that following a relationship from one entity to the next takes time proportional only to how many relationships that entity has, not to the size of the entire graph. It supports openCypher, the most widely-used property graph query language, with 100% compliance against the official Technology Compatibility Kit.
-
-### Messaging without a message broker
-
-[**pg-tide**](https://github.com/trickle-labs/pg-tide) gives PostgreSQL a built-in messaging backbone. It implements the transactional outbox pattern: you publish events inside the same database transaction as your business logic — no dual-writes, no distributed transactions, no chance of messages getting lost or duplicated. When you are ready to fan out to Kafka, NATS, Redis Streams, or any of fifteen other platforms, a lightweight relay binary bridges the gap with exactly-once delivery semantics. Pipeline configuration lives in PostgreSQL itself and hot-reloads without restarting.
 
 ### Safe schema evolution for streaming pipelines
 
