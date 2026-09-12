@@ -32,7 +32,7 @@ Consequences can run as typed PostgreSQL functions or be handed to external syst
 
 ### eterministic entity resolution and golden records
 
-pg-mdm is a PostgreSQL 18 extension for resolving duplicate records into durable entities and golden records. Define source mappings, matching rules, and golden-value policies in SQL. On refresh, pg-mdm combines matching evidence with human decisions, assigns stable IDs that follow entities through merges and splits, and publishes golden records, source membership, and a review queue as ordinary PostgreSQL tables.
+[**pg-mdm**](https://github.com/trickle-labs/pg-mdm) is a PostgreSQL 18 extension for resolving duplicate records into durable entities and golden records. Define source mappings, matching rules, and golden-value policies in SQL. On refresh, pg-mdm combines matching evidence with human decisions, assigns stable IDs that follow entities through merges and splits, and publishes golden records, source membership, and a review queue as ordinary PostgreSQL tables.
 
 pg-trickle incrementally maintains the normalized values, candidate pairs, and matching evidence as source data changes. pg-mdm evaluates the full required evidence set before publishing results in one transaction. If it cannot evaluate every required candidate, the refresh fails and leaves the last complete results intact. This keeps missing work from being mistaken for evidence that two records do not match.
   
