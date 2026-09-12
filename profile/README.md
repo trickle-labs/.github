@@ -30,7 +30,7 @@ Stream tables can depend on other stream tables. A single write to a base table 
 
 Consequences can run as typed PostgreSQL functions or be handed to external systems through a transactional outbox. Activations, retries, leases, execution history, and rule versions all live in PostgreSQL, making the entire path from source data to completed action inspectable with SQL. pg-react also supports maintained derived facts and recursive reasoning, extending the same model from reacting to changes to continuously deriving new knowledge from the data already in the database.
 
-### eterministic entity resolution and golden records
+### Deterministic entity resolution and golden records
 
 [**pg-mdm**](https://github.com/trickle-labs/pg-mdm) is a PostgreSQL 18 extension for resolving duplicate records into durable entities and golden records. Define source mappings, matching rules, and golden-value policies in SQL. On refresh, pg-mdm combines matching evidence with human decisions, assigns stable IDs that follow entities through merges and splits, and publishes golden records, source membership, and a review queue as ordinary PostgreSQL tables.
 
