@@ -30,6 +30,12 @@ Stream tables can depend on other stream tables. A single write to a base table 
 
 Consequences can run as typed PostgreSQL functions or be handed to external systems through a transactional outbox. Activations, retries, leases, execution history, and rule versions all live in PostgreSQL, making the entire path from source data to completed action inspectable with SQL. pg-react also supports maintained derived facts and recursive reasoning, extending the same model from reacting to changes to continuously deriving new knowledge from the data already in the database.
 
+### eterministic entity resolution and golden records
+
+pg-mdm is a PostgreSQL 18 extension for resolving duplicate records into durable entities and golden records. Define source mappings, matching rules, and golden-value policies in SQL. On refresh, pg-mdm combines matching evidence with human decisions, assigns stable IDs that follow entities through merges and splits, and publishes golden records, source membership, and a review queue as ordinary PostgreSQL tables.
+
+pg-trickle incrementally maintains the normalized values, candidate pairs, and matching evidence as source data changes. pg-mdm evaluates the full required evidence set before publishing results in one transaction. If it cannot evaluate every required candidate, the refresh fails and leaves the last complete results intact. This keeps missing work from being mistaken for evidence that two records do not match.
+  
 ### Messaging without a message broker
 
 [**pg-tide**](https://github.com/trickle-labs/pg-tide) gives PostgreSQL a built-in messaging backbone. It implements the transactional outbox pattern: you publish events inside the same database transaction as your business logic — no dual-writes, no distributed transactions, no chance of messages getting lost or duplicated. When you are ready to fan out to Kafka, NATS, Redis Streams, or any of fifteen other platforms, a lightweight relay binary bridges the gap with exactly-once delivery semantics. Pipeline configuration lives in PostgreSQL itself and hot-reloads without restarting.
